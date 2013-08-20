@@ -1,4 +1,6 @@
-#include "FacebookJni.h"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+
+#include "FacebookInterface.h"
 #include "platform/android/jni/JniHelper.h"
 #include <jni.h>
 #include <android/log.h>
@@ -8,8 +10,6 @@ const char* FBJavaClassName = "org/cocos2dx/facebookjsb/FacebookJsbSDK";
 
 extern jsval anonEvaluate(JSContext *cx, JSObject *thisObj, const char* string);
 JSObject *fbObject = NULL;
-
-FacebookJni::FacebookJni(){}
 
 extern "C"{
 	void Java_org_cocos2dx_facebookjsb_FacebookJsbSDK_nativeCallback(JNIEnv*  env, jobject thiz, jint cbIndex,jstring params)
@@ -41,7 +41,7 @@ extern "C"{
 	}
 };
 
-void FacebookJni::login(int cbIndex,const char* scope){
+void FacebookInterface::login(int cbIndex,const char* scope){
 	JniMethodInfo t;
 	if (JniHelper::getStaticMethodInfo(t
 		, FBJavaClassName
@@ -62,7 +62,7 @@ void FacebookJni::login(int cbIndex,const char* scope){
 	}  	
 }
 
-void FacebookJni::logout(int cbIndex){
+void FacebookInterface::logout(int cbIndex){
 	JniMethodInfo t;
 	if (JniHelper::getStaticMethodInfo(t
 		, FBJavaClassName
@@ -74,7 +74,7 @@ void FacebookJni::logout(int cbIndex){
 	}  	
 }
 
-void FacebookJni::getLoginStatus(int cbIndex,bool force){
+void FacebookInterface::getLoginStatus(int cbIndex,bool force){
 	JniMethodInfo t;
 	if (JniHelper::getStaticMethodInfo(t
 		, FBJavaClassName
@@ -86,7 +86,7 @@ void FacebookJni::getLoginStatus(int cbIndex,bool force){
 	}  	
 }
 
-std::string FacebookJni::api(const char* graphPath,const char* method,const char* params,int cbIndex){
+std::string FacebookInterface::api(const char* graphPath,const char* method,const char* params,int cbIndex){
 	JniMethodInfo t;
 	std::string errorRet;
 
@@ -118,7 +118,7 @@ std::string FacebookJni::api(const char* graphPath,const char* method,const char
 	return errorRet;
 }
 
-void FacebookJni::ui(const char* params,int cbIndex){
+void FacebookInterface::ui(const char* params,int cbIndex){
 	JniMethodInfo t;
 	if (JniHelper::getStaticMethodInfo(t
 		, FBJavaClassName
@@ -131,3 +131,5 @@ void FacebookJni::ui(const char* params,int cbIndex){
 		t.env->DeleteLocalRef(t.classID);
 	}  
 }
+
+#endif

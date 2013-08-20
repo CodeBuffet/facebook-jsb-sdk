@@ -1,9 +1,9 @@
-#ifndef  _JNI_FACEBOOK_H_
-#define  _JNI_FACEBOOK_H_
+#ifndef  __INTERFACE_FACEBOOK_H_
+#define  __INTERFACE_FACEBOOK_H_
 
 #include "string"
 
-class FacebookJni
+class FacebookInterface
 {
 public:
 	static void login(int cbIndex,const char* scope);
@@ -12,8 +12,6 @@ public:
 	static std::string api(const char* graphPath,const char* method,const char* params,int cbIndex);
 	static void ui(const char* params,int cbIndex);
 
-private:
-	FacebookJni();
 };
 
-#endif  //_JNI_FACEBOOK_H_
+#endif  //__INTERFACE_FACEBOOK_H_
