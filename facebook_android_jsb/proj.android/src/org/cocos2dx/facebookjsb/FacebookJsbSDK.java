@@ -153,9 +153,9 @@ public class FacebookJsbSDK {
 					httpMethod = HttpMethod.POST;
 				else if (method.compareTo("delete") == 0)
 					httpMethod = HttpMethod.DELETE;
-				else if (method.compareTo("get") != 0)
-					return "{\"message\":\"Invaild method passed to ApiClient:"
-							+ method + "\"}";
+				//else if (method.compareTo("get") != 0)
+					//return "{\"message\":\"Invaild method passed to ApiClient:"
+							//+ method + "\"}";
 			}
 
 			Bundle parameters = new Bundle();
@@ -281,15 +281,16 @@ public class FacebookJsbSDK {
 				nativeCallback(cbIndex, "{\"authResponse\":{\"accessToken\":\""
 						+ session.getAccessToken()
 						+ "\"},\"status\":\"connected\"}");
-			} else if (session.isClosed()) {
-				nativeCallback(cbIndex, "{\"authResponse\":{\"accessToken\":\""
-						+ session.getAccessToken()
-						+ "\"},\"status\":\"unknown\"}");
 			} else if (session.getState() == SessionState.CLOSED_LOGIN_FAILED) {
 				nativeCallback(cbIndex, "{\"authResponse\":{\"accessToken\":\""
 						+ session.getAccessToken()
 						+ "\"},\"status\":\"not_authorized\"}");
 			}
+			else {
+				nativeCallback(cbIndex, "{\"authResponse\":{\"accessToken\":\""
+						+ session.getAccessToken()
+						+ "\"},\"status\":\"unknown\"}");
+			} 
 		}
 	}
 
