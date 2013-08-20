@@ -7,9 +7,10 @@
  */
 
 var FB = FB || {};
-var Facebook = Facebook || {};
+var FacebookJsb = FacebookJsb || {};
 
 FB.cbArray = [];
+FB.vaildMethod = []
 
 FB.login = function(cb,opts){
     var argNum = arguments.length;
@@ -25,16 +26,16 @@ FB.login = function(cb,opts){
             cbIndex = this.cbArray.push(cb) - 1;
 
         if(argNum == 2){
-            if(opts.scope != undefined)
-                Facebook.login(cbIndex,opts.scope);
+            if(opts.scope != undefined && typeof(opts.scope) == 'string')
+                FacebookJsb.login(cbIndex,opts.scope);
             else
-                Facebook.login(cbIndex);
+                FacebookJsb.login(cbIndex);
         }
         else
-            Facebook.login(cbIndex);
+            FacebookJsb.login(cbIndex);
     }
     else
-        Facebook.login(-1);
+        FacebookJsb.login(-1);
 };
 
 FB.getLoginStatus = function(cb,force){
@@ -48,11 +49,14 @@ FB.getLoginStatus = function(cb,force){
         if(cbIndex == -1)
             cbIndex = this.cbArray.push(cb) - 1;
 
-        cc.log("getLoginStatus:"+cbIndex);
-        if(argNum == 2)
-            Facebook.getLoginStatus(cbIndex,force);
+        if(argNum == 2){
+            if(force === 'true')
+                FacebookJsb.getLoginStatus(cbIndex,true);
+            else
+                FacebookJsb.getLoginStatus(cbIndex,false);
+        }
         else
-            Facebook.getLoginStatus(cbIndex,false);
+            FacebookJsb.getLoginStatus(cbIndex,false);
     }
 };
 
@@ -66,41 +70,49 @@ FB.logout = function(cb){
         var cbIndex = this.cbArray.indexOf(cb);
         if(cbIndex == -1)
             cbIndex = this.cbArray.push(cb) - 1;
-        Facebook.logout(cbIndex);
+        FacebookJsb.logout(cbIndex);
     }
     else
-        Facebook.logout(-1);
+        FacebookJsb.logout(-1);
 };
 
 //path,method,params,cb
 FB.api = function(par1,par2,par3,par4){
-    var argNum = arguments.length;
-    var error = null;
+    var typePath = typeof par1;
+    if(typePath != 'string')
+        throw "Expression is of type " +typePath+ ",not object";
+    else if(par1.length == 0)
+        throw "The passed argument could not be parsed as a url.";
 
-    switch(argNum){
-        case 2:{
-            var cbIndex = this.cbArray.indexOf(par2);
-            if(cbIndex == -1)
-                cbIndex = this.cbArray.push(par2) - 1;
-            cc.log("path:"+par1);
-            error = Facebook.api(par1,cbIndex);
-            break;
-        }
-        case 3:{
-            var cbIndex = this.cbArray.indexOf(par3);
-            if(cbIndex == -1)
-                cbIndex = this.cbArray.push(par3) - 1;
-            error = Facebook.api(par1,JSON.stringify(par2),cbIndex);
-            break;
-        }
-        case 4:{
-            var cbIndex = this.cbArray.indexOf(par4);
-            if(cbIndex == -1)
-                cbIndex = this.cbArray.push(par4) - 1;
-            error = Facebook.api(par1,par2,JSON.stringify(par3),cbIndex);
-            break;
+    var method;
+    var params;
+    var callback;
+
+    for(var index=1; index<arguments.length; index++){
+        switch (typeof  arguments[index]){
+            case 'string':
+                method = arguments[index];
+                break;
+            case 'object':
+                params = arguments[index];
+                break;
+            case 'function':
+                callback = arguments[index];
+                break;
         }
     }
+
+    if(method && method != 'get' && method != 'post' && method != 'delete')
+        throw 'Invalid method passed to ApiClient: '+method;
+
+    var cbIndex = -1;
+    if(callback){
+        cbIndex = this.cbArray.indexOf(callback);
+        if(cbIndex == -1)
+            cbIndex = this.cbArray.push(callback) - 1;
+    }
+
+    var error = FacebookJsb.api(par1,method,JSON.stringify(params),cbIndex);
     if(error != null){
        var errorObj = eval('('+error+')');
        throw  errorObj;
@@ -113,16 +125,18 @@ FB.ui = function(params,cb){
         var cbIndex = this.cbArray.indexOf(cb);
         if(cbIndex == -1)
             cbIndex = this.cbArray.push(cb) - 1;
-        Facebook.ui(JSON.stringify(params),cbIndex);
+        FacebookJsb.ui(JSON.stringify(params),cbIndex);
     }
 };
 
 FB.callback = function(index,params){
-    var argNum = arguments.length;
-    if(argNum == 2){
-        var response = eval('('+params+')');
-        this.cbArray[index](response);
+    if(index >= 0 && index < this.cbArray.length){
+        var argNum = arguments.length;
+        if(argNum == 2){
+            var response = eval('('+params+')');
+            this.cbArray[index](response);
+        }
+        else
+            this.cbArray[index]();
     }
-    else
-        this.cbArray[index]();
 } ;

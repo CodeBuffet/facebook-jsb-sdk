@@ -7,10 +7,12 @@
  */
 
 var menuItemText = ['login','logout','getLoginStatus','UserInformation','FriendsInformation',
-    'recode score','post story','send request','graph api:post','graph api:delete'];
+    'record score','post story','send request','graph api:post','graph api:delete'];
 
 var FacebookTest = cc.Layer.extend({
     postId:null,
+    postCallbackBind:null,
+    deleteCallbackBind:null,
 
     ctor:function () {
         this._super();
@@ -43,6 +45,9 @@ var FacebookTest = cc.Layer.extend({
                 menuItem.setPosition(cc.p(posX,posY));
                 menu.addChild(menuItem);
             }
+
+            this.postCallbackBind = this.postCallback.bind(this);
+            this.deleteCallbackBind = this.deleteCallback.bind(this);
             bRet = true;
         }
         return bRet;
@@ -74,7 +79,7 @@ var FacebookTest = cc.Layer.extend({
                 break;
             }
             case 6:{
-                //FB.api('/me/scores/', 'post', { achievement: achievementURLs[kAchievement] }, 回调);
+                FB.api('/me/scores/', 'post', { score: 999999 }, this.scoreCallback);
                 break;
             }
             case 7:{
@@ -100,7 +105,7 @@ var FacebookTest = cc.Layer.extend({
             case 9:{
                 try{
                     var body = 'test post story by graph api';
-                    FB.api('/me/feed', 'post', { message: body }, this.postCallback);
+                    FB.api('/me/feed', 'post', { message: body }, this.postCallbackBind);
                 }
                 catch(err){
                     if(err.message != undefined)
@@ -109,15 +114,9 @@ var FacebookTest = cc.Layer.extend({
                 break;
             }
             case 10:{
-                if(this.postId){
-                    FB.api(this.postId, 'delete', function(response) {
-                        if (!response || response.error) {
-                            cc.log('Error occured');
-                        } else {
-                            cc.log('Post was deleted');
-                            this.postId = null;
-                        }
-                    });
+                cc.log("this.postId:"+this.postId);
+                if(this.postId != null){
+                    FB.api(this.postId, 'delete', this.deleteCallbackBind);
                 }
                 break;
             }
@@ -147,7 +146,7 @@ var FacebookTest = cc.Layer.extend({
         cc.log("FacebookTest friendsInformationCallback:"+JSON.stringify(response));
     },
     scoreCallback:function(response){
-
+        cc.log("FacebookTest scoreCallback:"+JSON.stringify(response));
     },
     postCallback:function(response){
         cc.log("FacebookTest postCallback:"+JSON.stringify(response));
@@ -171,6 +170,12 @@ var FacebookTest = cc.Layer.extend({
     },
     deleteCallback:function(response){
         cc.log("FacebookTest deleteCallback:"+JSON.stringify(response));
+        if (!response || response.error) {
+            cc.log('Error occured');
+        } else {
+            cc.log('Post was deleted');
+            this.postId = null;
+        }
     }
 });
 
