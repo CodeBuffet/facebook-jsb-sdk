@@ -139,8 +139,13 @@ using namespace std;
     return timeString;
 }
 /////////////////////////////
-- (void)requestWithGraphPath:(NSString *)graphPath HTTPMethod:(NSString *)method Parameters:(NSString *)parameters index:(int)cbIndex
+- (NSString *)requestWithGraphPath:(NSString *)graphPath HTTPMethod:(NSString *)method Parameters:(NSString *)parameters index:(int)cbIndex
 {
+
+    if (!self.session)
+    {
+        return @"{\"message\":\"An active access token must be used to query information about the current user.\",\"type\":\"OAuthException\",\"code\": 2500}";
+    }
     indexNUm  = cbIndex;
     id params = nil;
     if (![parameters isEqualToString:@"null"])
@@ -176,7 +181,7 @@ using namespace std;
         [[CCUIFaceBook shareCCUIFaceBook] requestApiCallBack:cbIndex Info:jsonString];
         
     }];
-
+    return @"";
 }
 - (void)requestApiCallBack:(int) cbIndex Info:(NSString *) JsonString
 {

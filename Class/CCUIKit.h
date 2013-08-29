@@ -31,19 +31,20 @@ public:
     void setCCUIKit(CCUIKit  * aCCUIKit);
     
     bool initFacebook();
-    bool logInFacebook(int tag,const char* scope);
+    bool logInFacebook(int cbIndex,const char* scope);
     bool logInFacebookCallBack(int cbIndex,const char*  logInfo);
-    const char * logOutFacebook(int tag);
+    const char * logOutFacebook(int cbIndex);
     const char * getActiveSessionState(int cbIndex,bool force);
 ////////////////////////////////////////////////
-    void requestWithGraphPath(const char * graphPath, const char * method, const char * parameters,int cbIndex);
+    std::string requestWithGraphPath(const char * graphPath, const char * method, const char * parameters,int cbIndex);
     void requestApiCallBack(int cbIndex,const char * JsonString);
 //////////////////////////////////////////////
     void ui(const char* params,int cbIndex);
     void uiCallBack(int  cbIndex,const char * result);
     void WebDialogsCallBack(const char *  resultURL,int result);
     void webDialogsWillPresentDialog(const char *dialog,const char *parameters,const char  *session);
-    void webDialogsWillDismissDialog(const char *dialog,const char *parameters,const char  *session,int result,const char  *url);   
+    void webDialogsWillDismissDialog(const char *dialog,const char *parameters,const char  *session,int result,const char  *url);
+    
 };
 
 

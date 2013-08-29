@@ -53,6 +53,13 @@ Getting Started with the Facebook JSB SDK
                     }];
 	}
 
+   - Add method to AppController.mm As
+  - (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    [FBAppEvents activateApp];
+    
+    [FBAppCall handleDidBecomeActive];
+	}
 
  4. [Set up the Facebook JSB SDK for IOS]:
 

@@ -45,7 +45,7 @@
 - (NSString *)getActiveSessionState:(int)cbIndex Force:(bool)force;
 - (NSString *)intervalSinceNow: (NSDate *) d;
 ////////////////////
-- (void)requestWithGraphPath:(NSString *)graphPath HTTPMethod:(NSString *)method Parameters:(NSString *)parameters index:(int)cbIndex;
+- (NSString *)requestWithGraphPath:(NSString *)graphPath HTTPMethod:(NSString *)method Parameters:(NSString *)parameters index:(int)cbIndex;
 - (void)requestApiCallBack:(int)cbIndex Info:(NSString *) JsonString;
 /////////////////
 -(void)UI:(NSString *)paramStr Index:(int)cbIndex;

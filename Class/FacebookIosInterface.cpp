@@ -13,7 +13,38 @@
 #include "ScriptingCore.h"
 using namespace std;
 
-static FacebookInterface * g_FacebookInterface = NULL;
+void FacebookInterface::login(int cbIndex,const char* scope)
+{
+	CCUIKit::shareCCUIKit()->logInFacebook(cbIndex,scope);
+}
+
+void FacebookInterface::logout(int cbIndex)
+{
+    CCUIKit::shareCCUIKit()->logOutFacebook(cbIndex);
+}
+
+void FacebookInterface::getLoginStatus(int cbIndex,bool force)
+{
+    CCUIKit::shareCCUIKit()->getActiveSessionState(cbIndex,force);
+}
+std::string FacebookInterface::api(const char* graphPath,const char* method,const char* params,int cbIndex)
+{
+    if (method == NULL)
+    {
+        method = "null";
+    }
+    if(params == NULL)
+    {
+        params = "null";
+    }
+  
+	return CCUIKit::shareCCUIKit()->requestWithGraphPath(graphPath, method, params,cbIndex);
+}
+
+void FacebookInterface::ui(const char* params,int cbIndex)
+{
+    CCUIKit::shareCCUIKit()->ui(params, cbIndex);
+}
 
 extern jsval anonEvaluate(JSContext *cx, JSObject *thisObj, const char* string);
 JSObject *fbObject = NULL;
@@ -44,70 +75,5 @@ void FacebookInterface::callbackJs(int cbIndex, const char* params)
 		JS_CallFunctionName(cx, fbObject, "callback", 1, argv, &res);
 	}
 }
-FacebookInterface::FacebookInterface()
-{
-    ;
-}
-FacebookInterface::~FacebookInterface()
-{
-    ;
-}
-FacebookInterface * FacebookInterface::shareFacebookInterface()
-{
-    if (!g_FacebookInterface)
-    {
-        g_FacebookInterface = new FacebookInterface();
-    }
-    return g_FacebookInterface;
-}
 
-void FacebookInterface::login(int cbIndex,const char* scope)
-{
-	CCUIKit::shareCCUIKit()->logInFacebook(cbIndex,scope);
-}
-bool FacebookInterface::logInFacebookCallBack(int cbIndex,const char*  logInfo)
-{
-    callbackJs(cbIndex,logInfo);
-    return true;
-}
-const char * FacebookInterface::logout(int cbIndex)
-{
-    callbackJs(cbIndex, CCUIKit::shareCCUIKit()->logOutFacebook(cbIndex));
-	return CCUIKit::shareCCUIKit()->logOutFacebook(cbIndex);
-}
-
-const char * FacebookInterface::getLoginStatus(int cbIndex, bool force)
-{
-    callbackJs(cbIndex, CCUIKit::shareCCUIKit()->getActiveSessionState(cbIndex,force));
-	return CCUIKit::shareCCUIKit()->getActiveSessionState(cbIndex,force);
-}
-
-void FacebookInterface::api(const char* graphPath,const char* method,const char* params,int cbIndex)
-{
-	 CCUIKit::shareCCUIKit()->requestWithGraphPath(graphPath, method, params,cbIndex);
-}
-void FacebookInterface::apiCallBack(int cbIndex,const char* JsonString)
-{
-    callbackJs(cbIndex, JsonString);
-}
-void FacebookInterface::ui(const char* params,int cbIndex)
-{
-    CCUIKit::shareCCUIKit()->ui(params, cbIndex);
-}
-void FacebookInterface::uiCallBack(int  cbIndex,const char * result)
-{
-    callbackJs(cbIndex,result);
-}
-void FacebookInterface::WebDialogsCallBack(const char *  resultURL,int result)
-{
-    ;
-}
-void FacebookInterface::webDialogsWillPresentDialog(const char *dialog,const char *parameters,const char  *session)
-{
-    ;
-}
-void FacebookInterface::webDialogsWillDismissDialog(const char *dialog,const char *parameters,const char  *session,int result,const char  *url)
-{
-
-}
 #endif
