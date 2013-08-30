@@ -3,15 +3,16 @@
 #include "FacebookInterface.h"
 #include "platform/android/jni/JniHelper.h"
 #include <jni.h>
+#include <android/log.h>
 #include "ScriptingCore.h"
 
-const char* FBJavaClassName = "org/cocos2dx/facebookjsb/FacebookConnectPlugin";
+const char* FBJavaClassName = "org/cocos2dx/facebookjsb/FacebookJsbSDK";
 
 extern jsval anonEvaluate(JSContext *cx, JSObject *thisObj, const char* string);
 JSObject *fbObject = NULL;
 
 extern "C"{
-	void Java_org_cocos2dx_facebookjsb_FacebookConnectPlugin_nativeCallback(JNIEnv*  env, jobject thiz, jint cbIndex,jstring params)
+	void Java_org_cocos2dx_facebookjsb_FacebookJsbSDK_nativeCallback(JNIEnv*  env, jobject thiz, jint cbIndex,jstring params)
 	{
 		ScriptingCore* sc = ScriptingCore::getInstance();
 		JSContext *cx = sc->getGlobalContext();

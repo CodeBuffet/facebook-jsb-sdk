@@ -62,22 +62,18 @@ JSBool JSB_Facebook_api(JSContext *cx, uint32_t argc, jsval *vp){
 		pParams = params.c_str();
 	}
 
-	errorRet = FacebookInterface::api(graphPath.c_str(),pMethod,pParams,JSVAL_TO_INT(argv[3]));
-		
-	if (errorRet.length() > 0)
-		JS_SET_RVAL(cx, vp, std_string_to_jsval(cx,errorRet));
-	else
-		JS_SET_RVAL(cx, vp, JSVAL_VOID);
+	FacebookInterface::api(graphPath.c_str(),pMethod,pParams,JSVAL_TO_INT(argv[3]));
 
 	return JS_TRUE;
 }
 
 JSBool JSB_Facebook_ui(JSContext *cx, uint32_t argc, jsval *vp){
+
 	std::string params ;
 	int cbIndex;
 
 	jsval *argv = JS_ARGV(cx, vp);
-	jsval_to_std_string(cx, argv[0], &params);
+    jsval_to_std_string(cx, argv[0], &params);
 	cbIndex = JSVAL_TO_INT(argv[1]);
 
 	FacebookInterface::ui(params.c_str(),cbIndex);
@@ -101,5 +97,5 @@ void register_facebook_js(JSContext* cx, JSObject* global){
 	JS_DefineFunction(cx, facebookJsbObject, "logout", JSB_Facebook_logout, 1, JSPROP_READONLY | JSPROP_PERMANENT);
 	JS_DefineFunction(cx, facebookJsbObject, "getLoginStatus", JSB_Facebook_getLoginStatus, 2, JSPROP_READONLY | JSPROP_PERMANENT);
 	JS_DefineFunction(cx, facebookJsbObject, "api", JSB_Facebook_api, 4, JSPROP_READONLY | JSPROP_PERMANENT);
-	JS_DefineFunction(cx, facebookJsbObject, "ui", JSB_Facebook_ui, 2, JSPROP_READONLY | JSPROP_PERMANENT);
+	JS_DefineFunction(cx, facebookJsbObject, "ui", JSB_Facebook_ui, 3, JSPROP_READONLY | JSPROP_PERMANENT);
 }
