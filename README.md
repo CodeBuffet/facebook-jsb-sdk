@@ -22,6 +22,7 @@ Getting Started with the Facebook JSB SDK
  1. Copy *Resources* and *Class* folder to your cocos2d-x application.
  2. Add the facebook RegisterCallback into Class/AppDelegate.cpp:
 
+```C++
     extern void register_facebook_js(JSContext* cx, JSObject* global);
  
     bool AppDelegate::applicationDidFinishLaunching(){
@@ -30,6 +31,7 @@ Getting Started with the Facebook JSB SDK
         sc->addRegisterCallback(register_facebook_js);
         sc->start();
     }
+```
  3. [Set up the Facebook JSB SDK for Android]:
   - Import the facebook-android-sdk into Eclipse.
   - Link to the facebook-android-sdk project and configure the Facebook app ID.
@@ -38,30 +40,31 @@ Getting Started with the Facebook JSB SDK
      - FacebookAndroidInterface.cpp  
      - js_bindings_facebook.cpp 
 
-3. [Set up the Facebook JSB SDK for IOS]:
+ 4. Set up the Facebook JSB SDK for IOS:
   - Add "#import "FacebookSDK/FacebookSDK.h" "to AppController.mm
   - Add method to AppController.mm As
-	- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  	sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
-    // attempt to extract a token from the url
-    	return [FBAppCall handleOpenURL:url
-                  sourceApplication:sourceApplication
-                    fallbackHandler:^(FBAppCall *call) {
 
-                    }];
-	}
+```Objective-c
+- (BOOL)application:(UIApplication *)application
+	    openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+	 annotation:(id)annotation {
+	// attempt to extract a token from the url
+	return [FBAppCall handleOpenURL:url
+		sourceApplication:sourceApplication
+		fallbackHandler:^(FBAppCall *call) {
+	}];
+}
+```
 
    - Add method to AppController.mm As
+
+```Objective-c
   - (void)applicationDidBecomeActive:(UIApplication *)application {
-    
     [FBAppEvents activateApp];
-    
     [FBAppCall handleDidBecomeActive];
 	}
-
- 4. [Set up the Facebook JSB SDK for IOS]:
+```
 
   [registered]:https://developers.facebook.com/apps
   [Set up the Facebook JSB SDK for Android]:https://developers.facebook.com/docs/android/getting-started/facebook-sdk-for-android/
