@@ -38,6 +38,29 @@ Getting Started with the Facebook JSB SDK
      - FacebookAndroidInterface.cpp  
      - js_bindings_facebook.cpp 
 
+3. [Set up the Facebook JSB SDK for IOS]:
+  - Add "#import "FacebookSDK/FacebookSDK.h" "to AppController.mm
+  - Add method to AppController.mm As
+	- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  	sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    // attempt to extract a token from the url
+    	return [FBAppCall handleOpenURL:url
+                  sourceApplication:sourceApplication
+                    fallbackHandler:^(FBAppCall *call) {
+
+                    }];
+	}
+
+   - Add method to AppController.mm As
+  - (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    [FBAppEvents activateApp];
+    
+    [FBAppCall handleDidBecomeActive];
+	}
+
  4. [Set up the Facebook JSB SDK for IOS]:
 
   [registered]:https://developers.facebook.com/apps
