@@ -41,6 +41,10 @@ extern "C"{
 	}
 };
 
+void FacebookInterface::callbackJs(int cbIndex, const char* params){
+	
+}
+
 void FacebookInterface::login(int cbIndex,const char* scope){
 	JniMethodInfo t;
 	if (JniHelper::getStaticMethodInfo(t
