@@ -131,8 +131,11 @@ FB.api = function (par1, par2, par3, par4) {
 
     }
 
-    if (par1.indexOf('/picture') != -1 && params) {
-        params.redirect = false;
+    if (par1.indexOf('/picture') != -1) {
+        if(params)
+            params.redirect = false;
+        else
+            params = {redirect:false};
     }
 
     var error = FacebookJsb.api(par1, method, JSON.stringify(params), cbIndex);

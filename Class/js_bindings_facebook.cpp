@@ -56,13 +56,19 @@ JSBool JSB_Facebook_api(JSContext *cx, uint32_t argc, jsval *vp){
 		jsval_to_std_string(cx, argv[1], &method);
 		pMethod = method.c_str();
 	}
+	
 	const char* pParams = NULL;
 	if(!JSVAL_IS_VOID(argv[2])){
 		jsval_to_std_string(cx, argv[2], &params);
 		pParams = params.c_str();
 	}
 
-	FacebookInterface::api(graphPath.c_str(),pMethod,pParams,JSVAL_TO_INT(argv[3]));
+	errorRet = FacebookInterface::api(graphPath.c_str(),pMethod,pParams,JSVAL_TO_INT(argv[3]));
+		
+	if (errorRet.length() > 0)
+		JS_SET_RVAL(cx, vp, std_string_to_jsval(cx,errorRet));
+	else
+		JS_SET_RVAL(cx, vp, JSVAL_VOID);
 
 	return JS_TRUE;
 }
@@ -73,7 +79,7 @@ JSBool JSB_Facebook_ui(JSContext *cx, uint32_t argc, jsval *vp){
 	int cbIndex;
 
 	jsval *argv = JS_ARGV(cx, vp);
-    jsval_to_std_string(cx, argv[0], &params);
+  jsval_to_std_string(cx, argv[0], &params);
 	cbIndex = JSVAL_TO_INT(argv[1]);
 
 	FacebookInterface::ui(params.c_str(),cbIndex);
