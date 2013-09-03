@@ -21,7 +21,6 @@ import com.facebook.Settings;
 import com.facebook.model.GraphObject;
 import com.facebook.widget.WebDialog;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -145,6 +144,8 @@ public class FacebookConnectPlugin {
 
 	public static String api(String graphPath, String method, String params,
 			int cbIndex) {
+		Log.v(Tag, "api-graphPath:"+graphPath);
+		
 		Session session = Session.getActiveSession();
 		if (session != null && session.isOpened()) {
 			HttpMethod httpMethod = HttpMethod.GET;
@@ -152,14 +153,11 @@ public class FacebookConnectPlugin {
 				if (method.compareTo("post") == 0)
 					httpMethod = HttpMethod.POST;
 				else if (method.compareTo("delete") == 0)
-					httpMethod = HttpMethod.DELETE;
-				//else if (method.compareTo("get") != 0)
-					//return "{\"message\":\"Invaild method passed to ApiClient:"
-							//+ method + "\"}";
+					httpMethod = HttpMethod.DELETE;				
 			}
 
 			Bundle parameters = new Bundle();
-			try {
+			try {				
 				if (params != null) {
 					JSONObject jsonObject = new JSONObject(params);
 					Iterator<String> iterator = jsonObject.keys();
@@ -189,21 +187,16 @@ public class FacebookConnectPlugin {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
+			
 			Request request = new Request(session, graphPath, parameters,
 					httpMethod, new FacebookConnectPlugin.RequestCallback(cbIndex));
 			Message message = myHandler.obtainMessage(
 					MyHandler.EXECUTE_REQUEST, request);
 
-			message.sendToTarget();
+			message.sendToTarget();		
 		} else {
 			return "{\"message\":\"An active access token must be used to query information about the current user.\""
-					+ ",\"type\":\"OAuthException\",\"code\": 2500}";
-			/*
-			 * { "error": { "message":
-			 * "An active access token must be used to query information about the current user."
-			 * , "type": "OAuthException", "code": 2500 } }
-			 */
+					+ ",\"type\":\"OAuthException\",\"code\": 2500}";			
 		}
 		return null;
 	}
@@ -315,11 +308,15 @@ public class FacebookConnectPlugin {
 					e.printStackTrace();
 				}				
 			} else {
-				GraphObject object = response.getGraphObject();
-				if (object != null) {
+				GraphObject object = response.getGraphObject();				
+				Object tObject = object.getProperty(Response.NON_JSON_RESPONSE_PROPERTY);
+				if (tObject==null && object != null) {
 					JSONObject jsonObject = object.getInnerJSONObject();
 					if (jsonObject != null)
 						nativeCallback(mCallbackIndex, jsonObject.toString());
+				}
+				else {
+					nativeCallback(mCallbackIndex, tObject.toString());					
 				}
 			}
 		}
@@ -414,10 +411,9 @@ public class FacebookConnectPlugin {
 			case CallByLogin:
 				if (session.isOpened()) {
 					mCallByMode = CallByNull;
-					// Date curDate = new Date();
-					// Log.v(Tag,
-					// "getExpirationDate:"+session.getExpirationDate().compareTo(curDate));
-					// Log.v(Tag, "hashCode:"+session.hashCode());
+					//Date curDate = new Date();
+					//Log.v(Tag,"getExpirationDate:"+(session.getExpirationDate().getTime()-curDate.getTime()));
+					
 					if (mCallbackIndex != -1)
 						nativeCallback(mCallbackIndex,
 								"{\"authResponse\":{\"accessToken\":\""
