@@ -1,0 +1,16 @@
+#####
+# OS X temporary files that should never be committed
+ 
+.DS_Store
+*.swp
+*.lock
+profile
+ 
+
+# Android build
+FB-Android-JSB/facebook-android-sdk-3.5/bin
+FB-Android-JSB/facebook-android-sdk-3.5/gen
+FB-Android-JSB/facebook-android-sdk-3.5/local.properties
+
+project.*
+
